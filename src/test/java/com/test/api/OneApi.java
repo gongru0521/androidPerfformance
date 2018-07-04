@@ -12,6 +12,8 @@ import java.util.Iterator;
 
 import javax.swing.text.html.parser.Entity;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.Test;
 
 import com.google.gson.JsonArray;
@@ -34,11 +36,17 @@ public class OneApi {
 	String ss="";
 	PrintWriter pw;
 	StringBuffer contents=new StringBuffer();
-
 	
+
+	Logger logger=Logger.getLogger(OneApi.class);
+
 	//建立连接
 	@Test
 	public void testapi() throws IOException{
+		//调用日志文件
+		PropertyConfigurator.configure("./resource/log4j.properties");
+		logger.info("testcase result!");
+		
 		//建立连接
 		URL url=new URL(link);
 		conn=(HttpURLConnection)url.openConnection();
@@ -58,8 +66,10 @@ public class OneApi {
 		pw.flush();
         pw.close();
         //
-        System.out.println("conn.getResponseCode():"+conn.getResponseCode());
-		System.out.println("conn.getResponseMessage():"+conn.getResponseMessage());
+        logger.info("conn.getResponseCode():"+conn.getResponseCode());
+//        System.out.println("conn.getResponseCode():"+conn.getResponseCode());
+//		System.out.println("conn.getResponseMessage():"+conn.getResponseMessage());
+        logger.info("conn.getResponseMessage():"+conn.getResponseMessage());
 		// 定义BufferedReader输入流来读取URL的响应
 		InputStreamReader isr=new InputStreamReader(conn.getInputStream());
 		
@@ -84,22 +94,24 @@ public class OneApi {
 		
 		JsonObject object=(JsonObject) parser.parse(ss);
 		//依据 json 格式里的数据类型
-	System.out.println("code:"+object.get("code").getAsString());
-	
-	System.out.println("message:"+object.get("message").getAsString());
-	
+		logger.info("code:"+object.get("code").getAsString());
+//	System.out.println("code:"+object.get("code").getAsString());
+//	
+//	System.out.println("message:"+object.get("message").getAsString());
+	logger.info("message:"+object.get("message").getAsString());
 	//接着读取test.json里的JSON数组，名称是languages（键）
 
 	//创建一个JsonArray
 	JsonArray arra=object.get("data").getAsJsonArray();
 	for(int i=0;i<arra.size();i++){
-		System.out.println("第"+i+"条数据");
+		logger.info("第"+i+"条数据");
+		//System.out.println("第"+i+"条数据");
 		JsonObject subObject=arra.get(i).getAsJsonObject();
-		System.out.println("subObject:"+subObject);
+		//System.out.println("subObject:"+subObject);
+		logger.info("data:"+subObject);
 		
 		
 	//	System.out.println("add_time:"+subObject.get("add_time").getAsString());
-	//	System.out.println("adistance:"+subObject.get("adistance").getAsString());	
 		
 	}
 	
